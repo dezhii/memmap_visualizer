@@ -1,0 +1,45 @@
+{
+    "segments": 
+    [
+        {
+        "name": "Boot Code",
+        "start": "0x0",
+        "length": 8192
+        },
+        {
+        "name": "System Code",
+        "start": "0x2000",
+        "length": 32768
+        },
+        {
+        "name": "Shared Memory",
+        "start": "0x8000",
+        "length": 16384
+        },
+        {
+        "name": "User Data",
+        "start": "0xA000",
+        "length": 16384
+        },
+        {
+        "name": "Cached Data",
+        "start": "0x9000",
+        "length": 8192
+        },
+        {
+        "name": "Reserved",
+        "start": "0xE000",
+        "length": 4096
+        },
+        {
+        "name": "Peripheral I/O",
+        "start": "0xF000",
+        "length": 4096
+        },
+        {
+        "name": "堆栈段",
+        "start": "0x1500",
+        "end": "0x1800"
+        }
+    ]
+}
