@@ -51,6 +51,52 @@ python memmap_visualizer.py input.json
 4. 查看生成的图表：
 程序会生成一个名为 `input_visualization.png` 的图片文件，其中展示了内存段的分布情况。
 
+## 中文字体问题解决方案
+
+如果您在运行程序时看到如下错误：
+```
+findfont: Generic family 'sans-serif' not found because none of the following families were found: SimHei
+```
+
+这表示您的系统中没有安装程序所需的中文字体。解决方法如下：
+
+### Windows用户
+Windows通常已经安装了SimHei(黑体)字体，无需额外操作。
+
+### macOS用户
+macOS用户可以通过以下步骤解决：
+1. 安装系统自带的中文字体：在"系统设置" > "语言与区域" > "键盘偏好设置"中，添加中文输入法
+2. 使用Homebrew安装开源中文字体：
+   ```bash
+   # 安装Homebrew (如果尚未安装)
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   
+   # 安装Source Han Sans字体
+   brew tap homebrew/cask-fonts
+   brew install --cask font-sourcehan-sans
+   ```
+3. 或手动安装字体：
+   - 下载[思源黑体](https://github.com/adobe-fonts/source-han-sans/releases/latest)
+   - 双击下载的字体文件安装到系统
+   
+4. 安装字体后重新启动程序
+
+### Linux用户
+Linux用户可以安装相应的中文字体包：
+- Ubuntu/Debian：
+  ```bash
+  sudo apt-get install fonts-wqy-microhei
+  ```
+- CentOS/Fedora：
+  ```bash
+  sudo yum install wqy-microhei-fonts
+  ```
+
+安装字体后，可能需要清除matplotlib的字体缓存：
+```bash
+rm -rf ~/.matplotlib/*.cache
+```
+
 ## 注意事项
 
 - 地址可以使用十六进制字符串（如"0x1000"）或直接使用数字（如4096）

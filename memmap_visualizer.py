@@ -1,5 +1,6 @@
 import json
 import sys
+import platform
 import matplotlib.pyplot as plt
 import numpy as np
 from typing import List, Dict, Tuple
@@ -7,8 +8,32 @@ import matplotlib.patches as patches
 import matplotlib.colors as mcolors
 
 # 设置中文字体
-plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
+system = platform.system()
+if system == 'Windows':
+    plt.rcParams['font.sans-serif'] = ['SimHei']  # Windows系统
+elif system == 'Darwin':  # macOS
+    # 更新macOS字体列表，按照更可能存在的顺序排列
+    plt.rcParams['font.sans-serif'] = ['Arial Unicode MS', 'Heiti TC', 'STHeiti', 'PingFang SC']
+else:  # Linux等系统
+    plt.rcParams['font.sans-serif'] = ['WenQuanYi Micro Hei', 'Droid Sans Fallback', 'AR PL UMing CN']
 plt.rcParams['axes.unicode_minus'] = False    # 用来正常显示负号
+
+# 额外的字体配置，使用matplotlib的内置回退方案
+try:
+    # 尝试导入matplotlib的字体管理模块
+    from matplotlib import font_manager
+    # 清理字体缓存的现代方法，而不是使用_rebuild
+    import os
+    import shutil
+    cache_dir = font_manager.get_cachedir()
+    if os.path.exists(cache_dir):
+        shutil.rmtree(cache_dir, ignore_errors=True)
+        print(f"已清理字体缓存目录: {cache_dir}")
+    # 让matplotlib重新加载字体
+    font_manager._load_fontmanager()
+except Exception as e:
+    print(f"字体配置警告: {e}")
+    print("将尝试使用默认字体渲染")
 
 def hex_to_int(hex_str):
     """将十六进制字符串转换为整数，同时支持数字类型"""
@@ -95,6 +120,32 @@ def visualize_memory_map(json_file: str):
         '#D4F0F7',  # 浅天蓝
         '#CCEAED',  # 浅蓝绿
     ]
+    
+    # 检查当前字体配置是否支持中文 - 此处简化检测方法
+    can_display_chinese = True
+    try:
+        from matplotlib.font_manager import findfont, FontProperties
+        # 更可靠的方法检测中文字体是否可用
+        fonts = plt.rcParams['font.sans-serif']
+        font_found = False
+        
+        # 尝试找到一个可用的字体
+        for font in fonts:
+            try:
+                fp = FontProperties(family=font)
+                if findfont(fp) != findfont(FontProperties()):
+                    font_found = True
+                    print(f"使用字体: {font}")
+                    break
+            except:
+                continue
+                
+        if not font_found:
+            print("警告: 无法找到合适的中文字体，正在使用系统默认字体")
+            can_display_chinese = False
+    except Exception as e:
+        print(f"字体检测警告: {e}")
+        can_display_chinese = False
     
     # 绘制内存段
     for i, (name, start, end) in enumerate(segments):
